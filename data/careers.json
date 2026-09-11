@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Software Development",
+    "description": "Build websites, applications and software systems.",
+    "streams": ["Science", "Commerce", "Vocational", "Other"],
+    "interests": ["Technology"],
+    "skills": ["Python", "Programming", "Problem Solving"],
+    "required_skills": ["Programming", "Problem Solving", "Python"]
+  },
+  {
+    "name": "Data Analytics",
+    "description": "Turn data into insights that help organizations make decisions.",
+    "streams": ["Science", "Commerce", "Other"],
+    "interests": ["Technology", "Business", "Finance", "Science"],
+    "skills": ["Python", "Excel", "Problem Solving"],
+    "required_skills": ["Excel", "Python", "Problem Solving"]
+  },
+  {
+    "name": "UI/UX Design",
+    "description": "Design digital products that are useful, accessible and enjoyable.",
+    "streams": ["Science", "Commerce", "Humanities", "Vocational", "Other"],
+    "interests": ["Design", "Technology", "Media"],
+    "skills": ["Graphic Design", "Research", "Problem Solving"],
+    "required_skills": ["Graphic Design", "Research", "Problem Solving"]
+  },
+  {
+    "name": "Digital Marketing",
+    "description": "Use digital platforms and creative strategies to grow organizations.",
+    "streams": ["Commerce", "Humanities", "Science", "Vocational", "Other"],
+    "interests": ["Business", "Media", "Technology"],
+    "skills": ["Communication", "Writing", "Research"],
+    "required_skills": ["Communication", "Writing", "Research"]
+  },
+  {
+    "name": "Content & Media",
+    "description": "Create written, visual and multimedia content for audiences.",
+    "streams": ["Humanities", "Commerce", "Science", "Vocational", "Other"],
+    "interests": ["Media", "Writing", "Design"],
+    "skills": ["Writing", "Graphic Design", "Communication"],
+    "required_skills": ["Writing", "Communication", "Graphic Design"]
+  },
+  {
+    "name": "Social Impact & Development",
+    "description": "Work on initiatives that address social and community challenges.",
+    "streams": ["Humanities", "Commerce", "Science", "Other"],
+    "interests": ["Social Impact", "Education", "Healthcare"],
+    "skills": ["Communication", "Research", "Public Speaking"],
+    "required_skills": ["Communication", "Research", "Public Speaking"]
+  }
+]
