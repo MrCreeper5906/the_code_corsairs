@@ -3,6 +3,7 @@ import sqlite3
 import hashlib
 from logic.recommender import recommend_careers
 from logic.experiments import get_experiment
+from logic.roadmap import CAREER_ROADMAPS
 
 def init_database():
     conn = sqlite3.connect("careercompass.db")
@@ -15,7 +16,8 @@ def init_database():
             name TEXT,
             career TEXT,
             current_day INTEGER,
-            experiment_started INTEGER
+            experiment_started INTEGER,
+            reflection TEXT
         )
     """)
 
@@ -25,20 +27,28 @@ def init_database():
 
 init_database()
 
-def save_progress(profile_id, name, career, current_day, experiment_started):
+def save_progress(
+    profile_id,
+    name,
+    career,
+    current_day,
+    experiment_started,
+    reflection=""
+):
     conn = sqlite3.connect("careercompass.db")
     cursor = conn.cursor()
 
     cursor.execute("""
         INSERT OR REPLACE INTO student_progress
-        (profile_id, name, career, current_day, experiment_started)
-        VALUES (?, ?, ?, ?, ?)
+        (profile_id, name, career, current_day, experiment_started, reflection)
+        VALUES (?, ?, ?, ?, ?, ?)
     """, (
         profile_id,
         name,
         career,
         current_day,
-        int(experiment_started)
+        int(experiment_started),
+        reflection
     ))
 
     conn.commit()
@@ -79,6 +89,12 @@ st.set_page_config(
     page_icon="🎓",
     layout="wide"
 )
+
+# -----------------------------
+# DEVELOPER TEST MODE
+# -----------------------------
+
+DEV_MODE = True
 
 st.title("🎓 Lorem Ipsum")
 st.subheader("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
@@ -367,6 +383,35 @@ if st.session_state.recommendations:
                     f"**Day {day}:** {task}"
                 )
 
+        # -----------------------------
+        # DEVELOPER SHORTCUT
+        # -----------------------------
+
+        if DEV_MODE:
+
+            if st.button("🛠️ DEV: Jump to Day 7"):
+
+                st.session_state.experiment_started = True
+                st.session_state.current_day = 7
+
+                profile_id = create_profile_id(
+                    student["name"],
+                    student["stream"],
+                    student["interests"],
+                    student["skills"],
+                    student["experience"]
+                )
+
+                save_progress(
+                    profile_id,
+                    student["name"],
+                    top_career["name"],
+                    7,
+                    True
+                )
+
+                st.rerun()
+
 
         # -----------------------------
         # START EXPERIMENT
@@ -437,7 +482,6 @@ if st.session_state.recommendations:
                         student["experience"]
                     )
 
-                    # Save the new progress
                     save_progress(
                         profile_id,
                         student["name"],
@@ -445,9 +489,13 @@ if st.session_state.recommendations:
                         st.session_state.current_day,
                         st.session_state.experiment_started
                     )
+
                     st.rerun()
 
                 else:
+
+                    # Day 7 completed
+                    st.session_state.experiment_completed = True
 
                     profile_id = create_profile_id(
                         student["name"],
@@ -457,17 +505,163 @@ if st.session_state.recommendations:
                         student["experience"]
                     )
 
-                    # Day 7 completed
                     save_progress(
+                        profile_id,
                         student["name"],
                         top_career["name"],
                         current_day,
                         st.session_state.experiment_started
                     )
 
-                    st.success(
-                        "🎉 You completed the entire 7-day experiment!"
+                    st.rerun()
+
+            if st.session_state.get("experiment_completed", False):
+
+                st.divider()
+
+                st.subheader("🎉 You completed your 7-day experiment!")
+
+                st.write(
+                    f"You've now had a chance to experience "
+                    f"what **{top_career['name']}** is like."
+                )
+
+                st.subheader("🧠 What did you discover?")
+
+                reflection = st.radio(
+                    "How did the experience feel?",
+                    [
+                        "😍 I really enjoyed it",
+                        "🙂 It was interesting",
+                        "😐 I'm still unsure",
+                        "😕 I didn't enjoy it"
+                    ],
+                    key="career_reflection"
+                )
+
+                next_step = st.radio(
+                    "What would you like to do next?",
+                    [
+                        "🚀 Explore this career further",
+                        "📚 Learn the basics first",
+                        "🔎 Try another career",
+                        "🤷 I'm still figuring it out"
+                    ],
+                    key="career_next_step"
+                )
+
+                if st.button("🎯 Show me my next step"):
+
+                    profile_id = create_profile_id(
+                        student["name"],
+                        student["stream"],
+                        student["interests"],
+                        student["skills"],
+                        student["experience"]
                     )
+
+                    save_progress(
+                        profile_id,
+                        student["name"],
+                        top_career["name"],
+                        current_day,
+                        st.session_state.experiment_started,
+                        reflection
+                    )
+
+                    st.session_state.reflection_submitted = True
+
+            if st.session_state.get("reflection_submitted", False):
+
+                st.divider()
+
+                st.subheader("🎯 Your next step")
+
+                roadmap = CAREER_ROADMAPS.get(top_career["name"])
+
+                if "really enjoyed" in reflection and "Explore" in next_step:
+
+                    st.success(
+                        f"🚀 **{top_career['name']} looks worth exploring further!**"
+                    )
+
+                    st.write(
+                        "You enjoyed the hands-on experience. "
+                        "Now let's turn that interest into useful skills."
+                    )
+
+                    if roadmap:
+
+                        st.write("### 📚 1. Build your foundation")
+
+                        for resource in roadmap["learn"]:
+                            st.markdown(
+                                f"**[{resource['title']}]({resource['url']})**"
+                            )
+                            st.write(resource["description"])
+
+                        st.write("### 🛠️ 2. Build something")
+
+                        st.info(roadmap["project"])
+
+                        st.write("### 💼 3. Move toward opportunities")
+
+                        st.write(roadmap["internship"])
+
+                    else:
+
+                        st.write(
+                            "We'll help you find beginner resources, "
+                            "projects and opportunities for this career."
+                        )
+
+                elif "still unsure" in reflection or "still figuring" in next_step:
+
+                    st.info(
+                        "🤔 **You're still figuring it out — and that's okay.**"
+                    )
+
+                    st.write(
+                        "One experiment doesn't have to decide your career. "
+                        "Try another related path and compare how the work feels."
+                    )
+
+                    st.write("**Recommended path:**")
+                    st.write("1. 🔎 Explore a related career")
+                    st.write("2. 🧪 Try another short experiment")
+                    st.write("3. 🧭 Compare what you enjoyed")
+
+                elif "didn't enjoy" in reflection or "another career" in next_step:
+
+                    st.info(
+                        "🔄 **This might not be the right fit — and that's useful.**"
+                    )
+
+                    st.write(
+                        "Finding out what you don't enjoy is part of finding "
+                        "a career that suits you."
+                    )
+
+                    st.write("**Recommended path:**")
+                    st.write("1. 🔎 Explore another career")
+                    st.write("2. 🧪 Try another experiment")
+                    st.write("3. 🎯 Keep the one that feels right")
+
+                else:
+
+                    st.success(
+                        f"📚 **Let's build your foundation in {top_career['name']}.**"
+                    )
+
+                    st.write(
+                        "You don't need to be job-ready immediately. "
+                        "Start with the basics, then gradually move toward projects."
+                    )
+
+                    st.write("**Recommended path:**")
+                    st.write("1. 📚 Learn the fundamentals")
+                    st.write("2. 🛠️ Practice with a small project")
+                    st.write("3. 💼 Explore beginner opportunities")
 
 
     # -----------------------------
