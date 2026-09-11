@@ -1,0 +1,99 @@
+[
+  {
+    "career": "Software Development",
+    "level": "beginner",
+    "orientation": {
+      "title": "Before you code",
+      "description": "Get a quick idea of what software developers actually do and how software is built.",
+      "resources": [
+        {
+          "title": "What is programming?",
+          "type": "Learn",
+          "url": "https://www.python.org/about/gettingstarted/"
+        }
+      ],
+      "starter_activity": "Think of a simple problem you face every day. Write down the steps you would want a computer to follow to solve it."
+    },
+    "duration": "7 days",
+    "goal": "Build a small web application and discover whether you enjoy solving problems through code.",
+    "tasks": [
+      "Learn the basics of HTML and CSS",
+      "Build a simple webpage",
+      "Add basic JavaScript functionality",
+      "Write a small Python program",
+      "Combine your ideas into a mini project",
+      "Test and improve your project",
+      "Reflect on whether you enjoyed the process"
+    ],
+    "skills": [
+      "Programming",
+      "Problem Solving",
+      "Logical Thinking"
+    ]
+  },
+  {
+    "career": "Data Analytics",
+    "level": "beginner",
+    "orientation": {
+      "title": "Before you analyze",
+      "description": "Understand what data analysts do and how raw information can become useful insights.",
+      "resources": [
+        {
+          "title": "Introduction to Data Analytics",
+          "type": "Learn",
+          "url": "https://www.ibm.com/think/topics/data-analytics"
+        }
+      ],
+      "starter_activity": "Look around your daily life and identify three things that could be measured as data—for example, study time, expenses or screen time."
+    },
+    "duration": "7 days",
+    "goal": "Use a small dataset to discover and communicate useful insights.",
+    "tasks": [
+      "Choose a small public dataset",
+      "Explore the data",
+      "Clean the data",
+      "Find three interesting patterns",
+      "Create three visualizations",
+      "Write a short insight report",
+      "Reflect on whether you enjoyed the process"
+    ],
+    "skills": [
+      "Excel",
+      "Python",
+      "Problem Solving",
+      "Data Visualization"
+    ]
+  },
+  {
+    "career": "UI/UX Design",
+    "level": "beginner",
+    "orientation": {
+      "title": "Before you design",
+      "description": "Learn the difference between UI and UX and understand how designers solve problems for real users.",
+      "resources": [
+        {
+          "title": "Introduction to User Experience Design",
+          "type": "Learn",
+          "url": "https://www.interaction-design.org/literature/topics/ux-design"
+        }
+      ],
+      "starter_activity": "Choose an app or website you use every day. Write down one thing that is easy to use and one thing that could be improved."
+    },
+    "duration": "5 days",
+    "goal": "Design a simple digital product from a real user problem.",
+    "tasks": [
+      "Identify a user problem",
+      "Research potential users",
+      "Sketch three possible solutions",
+      "Create a simple wireframe",
+      "Design the main interface",
+      "Ask someone to test your design",
+      "Reflect on what you learned"
+    ],
+    "skills": [
+      "Graphic Design",
+      "Research",
+      "Problem Solving"
+    ]
+  }
+]
