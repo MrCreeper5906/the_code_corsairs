@@ -122,5 +122,69 @@
       "Problem Solving",
       "Public Speaking"
     ]
+  },
+  {
+    "career": "Digital Marketing",
+    "level": "beginner",
+    "orientation": {
+      "title": "Before you market",
+      "description": "Understand how digital marketers use content, research and online platforms to reach and engage audiences.",
+      "resources": [
+        {
+          "title": "Getting started with digital marketing",
+          "type": "Learn",
+          "url": "https://learndigital.withgoogle.com/digitalgarage"
+        }
+      ],
+      "starter_activity": "Choose a brand or organization you know. Look at one of its social media posts and write down who you think it is trying to reach and what action it wants people to take."
+    },
+    "duration": "7 days",
+    "goal": "Plan and test a simple digital marketing campaign for a real or imaginary organization.",
+    "tasks": [
+      "Choose a brand, organization or imaginary product",
+      "Identify its target audience",
+      "Research what the audience cares about",
+      "Create a simple marketing message",
+      "Design a social media post or campaign idea",
+      "Review your campaign and explain why it could work",
+      "Reflect on whether you enjoyed the process"
+    ],
+    "skills": [
+      "Communication",
+      "Writing",
+      "Research"
+    ]
+  },
+  {
+    "career": "Content & Media",
+    "level": "beginner",
+    "orientation": {
+      "title": "Before you create",
+      "description": "Explore how content creators turn ideas into written, visual and multimedia stories for different audiences.",
+      "resources": [
+        {
+          "title": "Introduction to content creation",
+          "type": "Learn",
+          "url": "https://www.canva.com/learn/content-creation/"
+        }
+      ],
+      "starter_activity": "Choose a topic you care about and imagine you need to explain it to someone who knows nothing about it. Write down three different ways you could present the idea."
+    },
+    "duration": "7 days",
+    "goal": "Create a small piece of audience-focused content and discover whether you enjoy the creative process.",
+    "tasks": [
+      "Choose a topic and identify your target audience",
+      "Research the topic and collect useful information",
+      "Write a short piece of content",
+      "Create a simple visual to support your message",
+      "Combine your writing and visual into one content piece",
+      "Share your work with someone and gather feedback",
+      "Reflect on whether you enjoyed the process"
+    ],
+    "skills": [
+      "Writing",
+      "Communication",
+      "Graphic Design"
+    ]
   }
 ]

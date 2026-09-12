@@ -85,7 +85,7 @@ def create_profile_id(name, stream, interests, skills, experience):
     ).hexdigest()
 
 st.set_page_config(
-    page_title="Lorem Ipsum",
+    page_title="CareerUp",
     page_icon="🎓",
     layout="wide"
 )
@@ -392,30 +392,30 @@ if st.session_state.recommendations:
         # DEVELOPER SHORTCUT
         # -----------------------------
 
-        if DEV_MODE:
+#        if DEV_MODE:
 
-            if st.button("🛠️ DEV: Jump to Day 7"):
+#            if st.button("🛠️ DEV: Jump to Day 7"):
 
-                st.session_state.experiment_started = True
-                st.session_state.current_day = 7
+#               st.session_state.experiment_started = True
+#                st.session_state.current_day = 7
 
-                profile_id = create_profile_id(
-                    student["name"],
-                    student["stream"],
-                    student["interests"],
-                    student["skills"],
-                    student["experience"]
-                )
+#                profile_id = create_profile_id(
+#                    student["name"],
+#                    student["stream"],
+#                    student["interests"],
+#                    student["skills"],
+#                    student["experience"]
+#                )
 
-                save_progress(
-                    profile_id,
-                    student["name"],
-                    top_career["name"],
-                    7,
-                    True
-                )
+#                save_progress(
+#                    profile_id,
+#                    student["name"],
+#                    top_career["name"],
+#                   7,
+#                    True
+#                )
 
-                st.rerun()
+#                st.rerun()
 
 
         # -----------------------------
@@ -533,6 +533,10 @@ if st.session_state.recommendations:
                     f"what **{top_career['name']}** is like."
                 )
 
+                st.caption(
+                    "You didn't have to choose a career — you actually tried one."
+                )
+
                 st.subheader("🧠 What did you discover?")
 
                 reflection = st.radio(
@@ -587,7 +591,10 @@ if st.session_state.recommendations:
                 roadmap = CAREER_ROADMAPS.get(top_career["name"])
 
                 # Student loved the career and wants to explore further
-                if "really enjoyed" in reflection and "Explore" in next_step:
+                if (
+                    ("really enjoyed" in reflection or "interesting" in reflection)
+                    and "Explore" in next_step
+                ):
 
                     st.success(
                         f"🚀 **{top_career['name']} looks worth exploring further!**"
