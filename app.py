@@ -96,17 +96,18 @@ st.set_page_config(
 
 DEV_MODE = True
 
-st.title("🎓 Lorem Ipsum")
-st.subheader("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+st.title("🎓 CareerUp")
+st.subheader("The Career Catalyst: Discover Your Path, One Experiment at a Time")
 
 st.write(
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    '"Start by doing what is necessary, '
+    "then what is possible,"
+    'and suddenly you are doing the impossible."'
 )
 
 st.divider()
 
-st.header("👤 Tell us about yourself")
+st.header("👤 Start with you")
 
 name = st.text_input("What should we call you?")
 
@@ -247,10 +248,6 @@ if st.button("🚀 Discover My Career Path"):
             st.session_state.current_day = 1
             st.session_state.experiment_started = False
 
-        # Reset experiment when discovering a new career path
-        st.session_state.experiment_started = False
-        st.session_state.day_1_complete = False
-
 
 # -----------------------------
 # SHOW RESULTS
@@ -276,9 +273,9 @@ if st.session_state.recommendations:
 
     st.write(top_career["description"])
 
-    st.success(
-        f"Based on your interests, skills and experience, "
-        f"**{top_career['name']}** looks like a strong direction to explore."
+    st.info(
+        f"🎯 Based on what you've told us, "
+        f"**{top_career['name']}** is a direction worth trying."
     )
 
     # -----------------------------
@@ -339,8 +336,16 @@ if st.session_state.recommendations:
         st.subheader("🧪 Try this career before you commit")
 
         st.write(
-            f"**{experiment['duration']} experiment:** "
-            f"{experiment['goal']}"
+            f"**{experiment['duration']} experiment**"
+        )
+
+        st.write(
+            experiment["goal"]
+        )
+
+        st.caption(
+            "You don't have to know everything beforehand. "
+            "The goal is to experience the work and see how it feels."
         )
 
         # Beginner orientation
@@ -372,7 +377,7 @@ if st.session_state.recommendations:
 
 
         # 7-day experiment
-        with st.expander("🗓️ See the 7-day experiment"):
+        with st.expander("🗓️ See the full 7-day plan"):
 
             for day, task in enumerate(
                 experiment["tasks"],
@@ -449,19 +454,21 @@ if st.session_state.recommendations:
 
             st.divider()
 
-            st.subheader("🎯 Your 7-Day Career Experiment")
+            st.subheader("🧪 Your career experiment")
 
-            st.write(
+            st.caption(
                 "You don't need to be perfect. "
-                "The goal is to experience what this career actually feels like."
+                "You're here to discover whether you enjoy the work."
             )
 
             current_day = st.session_state.current_day
 
-            # Day heading
-            st.subheader(f"🎯 Day {current_day}")
+            st.divider()
 
-            # Current day's task
+            st.subheader(f"🎯 Day {current_day} of 7")
+
+            st.write("### Today's challenge")
+
             st.info(
                 experiment["tasks"][current_day - 1]
             )
@@ -579,6 +586,7 @@ if st.session_state.recommendations:
 
                 roadmap = CAREER_ROADMAPS.get(top_career["name"])
 
+                # Student loved the career and wants to explore further
                 if "really enjoyed" in reflection and "Explore" in next_step:
 
                     st.success(
@@ -615,41 +623,10 @@ if st.session_state.recommendations:
                             "projects and opportunities for this career."
                         )
 
-                elif "still unsure" in reflection or "still figuring" in next_step:
+                # Student wants to learn before going further
+                elif "Learn the basics" in next_step:
 
                     st.info(
-                        "🤔 **You're still figuring it out — and that's okay.**"
-                    )
-
-                    st.write(
-                        "One experiment doesn't have to decide your career. "
-                        "Try another related path and compare how the work feels."
-                    )
-
-                    st.write("**Recommended path:**")
-                    st.write("1. 🔎 Explore a related career")
-                    st.write("2. 🧪 Try another short experiment")
-                    st.write("3. 🧭 Compare what you enjoyed")
-
-                elif "didn't enjoy" in reflection or "another career" in next_step:
-
-                    st.info(
-                        "🔄 **This might not be the right fit — and that's useful.**"
-                    )
-
-                    st.write(
-                        "Finding out what you don't enjoy is part of finding "
-                        "a career that suits you."
-                    )
-
-                    st.write("**Recommended path:**")
-                    st.write("1. 🔎 Explore another career")
-                    st.write("2. 🧪 Try another experiment")
-                    st.write("3. 🎯 Keep the one that feels right")
-
-                else:
-
-                    st.success(
                         f"📚 **Let's build your foundation in {top_career['name']}.**"
                     )
 
@@ -658,10 +635,80 @@ if st.session_state.recommendations:
                         "Start with the basics, then gradually move toward projects."
                     )
 
-                    st.write("**Recommended path:**")
-                    st.write("1. 📚 Learn the fundamentals")
-                    st.write("2. 🛠️ Practice with a small project")
-                    st.write("3. 💼 Explore beginner opportunities")
+                    if roadmap:
+
+                        st.write("### Start here")
+
+                        for resource in roadmap["learn"]:
+                            st.markdown(
+                                f"**[{resource['title']}]({resource['url']})**"
+                            )
+                            st.write(resource["description"])
+
+                        st.write("### 🛠️ When you're ready")
+
+                        st.info(roadmap["project"])
+
+                    else:
+
+                        st.write(
+                            "Start with beginner resources for this career, "
+                            "then move toward a small practical project."
+                        )
+
+                # Student wants another career
+                elif "another career" in next_step:
+
+                    st.info(
+                        "🔎 **Let's explore another direction.**"
+                    )
+
+                    st.write(
+                        "Trying a career and discovering that you want "
+                        "something different is valuable information."
+                    )
+
+                    st.write(
+                        "Your next step is to return to your career recommendations "
+                        "and try another path."
+                    )
+
+                # Student is still unsure
+                elif "still figuring" in next_step or "still unsure" in reflection:
+
+                    st.info(
+                        "🤔 **You're still figuring it out — and that's okay.**"
+                    )
+
+                    st.write(
+                        "Seven days doesn't have to decide your career. "
+                        "The goal is to learn more about yourself and your options."
+                    )
+
+                    st.write("### What we recommend")
+
+                    st.write("🔎 Explore a related career")
+                    st.write("🧪 Try another short experiment")
+                    st.write("🧭 Compare what you enjoyed in each experience")
+
+                # Student didn't enjoy the career
+                elif "didn't enjoy" in reflection:
+
+                    st.info(
+                        "🔄 **This career might not be the right fit — "
+                        "and that's useful information.**"
+                    )
+
+                    st.write(
+                        "You just learned something important about "
+                        "the kind of work you may not enjoy."
+                    )
+
+                    st.write("### Your next move")
+
+                    st.write("🔎 Explore another career")
+                    st.write("🧪 Try another experiment")
+                    st.write("🎯 Compare your experiences before deciding")
 
 
     # -----------------------------
@@ -672,7 +719,11 @@ if st.session_state.recommendations:
 
         st.divider()
 
-        st.subheader("🔎 Other paths worth exploring")
+        st.subheader("🔎 Other paths you could try")
+
+        st.caption(
+            "These are alternatives worth considering based on your profile."
+        )
 
         for career in recommendations[1:3]:
 
@@ -685,7 +736,7 @@ if st.session_state.recommendations:
                 )
 
                 st.write(
-                    "**Useful skills:** "
+                    "**Skills you could build:** "
                     + ", ".join(
                         career["required_skills"]
                     )

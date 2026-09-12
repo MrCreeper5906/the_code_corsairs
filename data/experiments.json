@@ -95,5 +95,32 @@
       "Research",
       "Problem Solving"
     ]
+  },
+  {
+    "career": "Social Impact & Development",
+    "level": "beginner",
+    "orientation": {
+      "title": "Before you make an impact",
+      "description": "Understand how social impact work identifies community problems and develops practical solutions.",
+      "resources": [],
+      "starter_activity": "Think of one problem in your school, college or community. Write down who is affected and one possible way to help."
+    },
+    "duration": "7 days",
+    "goal": "Explore a real community problem and design a small, practical solution.",
+    "tasks": [
+      "Choose a community problem you care about",
+      "Research who is affected by the problem",
+      "Identify the main causes of the problem",
+      "Explore existing solutions",
+      "Design a small practical solution",
+      "Explain your solution to someone and gather feedback",
+      "Reflect on whether you enjoyed the process"
+    ],
+    "skills": [
+      "Communication",
+      "Research",
+      "Problem Solving",
+      "Public Speaking"
+    ]
   }
 ]
