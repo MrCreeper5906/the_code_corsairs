@@ -5,6 +5,117 @@ from logic.recommender import recommend_careers
 from logic.experiments import get_experiment
 from logic.roadmap import CAREER_ROADMAPS
 
+# -----------------------------
+# UI STYLING
+# -----------------------------
+
+st.markdown("""
+<style>
+
+.block-container {
+    max-width: 1000px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+h2 {
+    margin-top: 2rem;
+}
+
+h3 {
+    margin-top: 1.5rem;
+}
+
+div[data-testid="stButton"] > button {
+    width: 100%;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-weight: 650;
+    font-size: 1rem;
+    min-height: 48px;
+    transition: all 0.2s ease;
+}
+
+div[data-testid="stButton"] > button:hover {
+    transform: translateY(-2px);
+}
+
+div[data-testid="stProgressBar"] {
+    margin-top: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+div[data-testid="stExpander"] {
+    border-radius: 10px;
+}
+
+.career-card {
+    padding: 1.5rem;
+    border: 1px solid rgba(128, 128, 128, 0.25);
+    border-radius: 14px;
+    margin: 1rem 0 1.5rem 0;
+}
+
+.career-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.career-description {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.career-note {
+    font-size: 0.95rem;
+    opacity: 0.8;
+}
+
+/* Reflection options */
+div[data-testid="stRadio"] label {
+    font-size: 1.02rem;
+    margin-bottom: 0.55rem;
+}
+
+/* Stronger minimal side atmosphere */
+
+[data-testid="stAppViewContainer"] {
+    background-image:
+        radial-gradient(
+            circle at 0% 15%,
+            rgba(120, 90, 200, 0.12) 0,
+            transparent 28rem
+        ),
+        radial-gradient(
+            circle at 100% 35%,
+            rgba(70, 150, 190, 0.14) 0,
+            transparent 30rem
+        ),
+        radial-gradient(
+            circle at 5% 90%,
+            rgba(90, 170, 150, 0.10) 0,
+            transparent 24rem
+        ),
+        radial-gradient(
+            circle at 95% 85%,
+            rgba(150, 100, 190, 0.10) 0,
+            transparent 26rem
+        );
+
+    background-attachment: fixed;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 def init_database():
     conn = sqlite3.connect("careercompass.db")
 
@@ -175,6 +286,9 @@ if "recommendations" not in st.session_state:
 if "student" not in st.session_state:
     st.session_state.student = None
 
+if "show_results" not in st.session_state:
+    st.session_state.show_results = False
+
 if "experiment_started" not in st.session_state:
     st.session_state.experiment_started = False
 
@@ -212,6 +326,7 @@ if st.button("🚀 Discover My Career Path"):
 
         st.session_state.student = student
         st.session_state.recommendations = recommendations
+        st.session_state.show_results = True
 
         # Check if this student already has saved progress
         saved_progress = load_progress(profile_id)
@@ -253,10 +368,12 @@ if st.button("🚀 Discover My Career Path"):
 # SHOW RESULTS
 # -----------------------------
 
-if st.session_state.recommendations:
+if (
+    st.session_state.recommendations
+    and st.session_state.show_results
+):
 
     recommendations = st.session_state.recommendations
-
     student = st.session_state.student
 
     st.success(f"Welcome, {student['name']}! 🎉")
@@ -269,13 +386,17 @@ if st.session_state.recommendations:
 
     top_career = recommendations[0]
 
-    st.subheader(f"🌟 {top_career['name']}")
-
-    st.write(top_career["description"])
-
-    st.info(
-        f"🎯 Based on what you've told us, "
-        f"**{top_career['name']}** is a direction worth trying."
+    st.markdown(
+        f"""
+        <div class="career-card">
+            <div class="career-title">🌟 {top_career['name']}</div>
+            <div class="career-description">{top_career['description']}</div>
+            <div class="career-note">
+                🎯 Based on what you've told us, this is a direction worth trying.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
     # -----------------------------
@@ -454,7 +575,7 @@ if st.session_state.recommendations:
 
             st.divider()
 
-            st.subheader("🧪 Your career experiment")
+            st.subheader("🧪 Your Career Experiment")
 
             st.caption(
                 "You don't need to be perfect. "
@@ -463,18 +584,40 @@ if st.session_state.recommendations:
 
             current_day = st.session_state.current_day
 
-            st.divider()
+            # -----------------------------
+            # PROGRESS
+            # -----------------------------
 
-            st.subheader(f"🎯 Day {current_day} of 7")
+            st.progress(
+                current_day / len(experiment["tasks"])
+            )
 
-            st.write("### Today's challenge")
+            st.markdown(
+                f"### 🎯 Day {current_day} of {len(experiment['tasks'])}"
+            )
+
+            st.caption(
+                f"{current_day} of {len(experiment['tasks'])} days completed"
+            )
+
+            # -----------------------------
+            # TODAY'S CHALLENGE
+            # -----------------------------
+
+            st.write("#### Today's challenge")
 
             st.info(
                 experiment["tasks"][current_day - 1]
             )
 
-            # Complete current day
-            if st.button(f"✅ Mark Day {current_day} complete"):
+            # -----------------------------
+            # COMPLETE DAY
+            # -----------------------------
+
+            if st.button(
+                f"✅ Mark Day {current_day} complete",
+                use_container_width=True
+            ):
 
                 if current_day < len(experiment["tasks"]):
 
@@ -526,6 +669,10 @@ if st.session_state.recommendations:
 
                 st.divider()
 
+                # -----------------------------
+                # EXPERIMENT COMPLETE
+                # -----------------------------
+
                 st.subheader("🎉 You completed your 7-day experiment!")
 
                 st.write(
@@ -537,31 +684,67 @@ if st.session_state.recommendations:
                     "You didn't have to choose a career — you actually tried one."
                 )
 
+                # -----------------------------
+                # REFLECTION
+                # -----------------------------
+
+                st.divider()
+
+                # -----------------------------
+                # REFLECTION
+                # -----------------------------
+
+                st.divider()
+
                 st.subheader("🧠 What did you discover?")
 
-                reflection = st.radio(
-                    "How did the experience feel?",
-                    [
-                        "😍 I really enjoyed it",
-                        "🙂 It was interesting",
-                        "😐 I'm still unsure",
-                        "😕 I didn't enjoy it"
-                    ],
-                    key="career_reflection"
+                st.caption(
+                    "Your experience matters. Take a moment to reflect on what you learned."
                 )
 
-                next_step = st.radio(
-                    "What would you like to do next?",
-                    [
-                        "🚀 Explore this career further",
-                        "📚 Learn the basics first",
-                        "🔎 Try another career",
-                        "🤷 I'm still figuring it out"
-                    ],
-                    key="career_next_step"
-                )
+                reflection_col, next_step_col = st.columns(2, gap="large")
 
-                if st.button("🎯 Show me my next step"):
+                with reflection_col:
+
+                    with st.container(border=True):
+
+                        st.markdown("### 😊 How did it feel?")
+
+                        reflection = st.radio(
+                            "Choose one",
+                            [
+                                "😍 I really enjoyed it",
+                                "🙂 It was interesting",
+                                "😐 I'm still unsure",
+                                "😕 I didn't enjoy it"
+                            ],
+                            key="career_reflection",
+                            label_visibility="collapsed"
+                        )
+
+
+                with next_step_col:
+
+                    with st.container(border=True):
+
+                        st.markdown("### 🚀 What next?")
+
+                        next_step = st.radio(
+                            "Choose one",
+                            [
+                                "🚀 Explore this career further",
+                                "📚 Learn the basics first",
+                                "🔎 Try another career",
+                                "🤷 I'm still figuring it out"
+                            ],
+                            key="career_next_step",
+                            label_visibility="collapsed"
+                        )
+
+                if st.button(
+                    "🎯 Show me my next step",
+                    use_container_width=True
+                ):
 
                     profile_id = create_profile_id(
                         student["name"],
@@ -582,6 +765,10 @@ if st.session_state.recommendations:
 
                     st.session_state.reflection_submitted = True
 
+                # -----------------------------
+                # NEXT STEP
+                # -----------------------------
+
             if st.session_state.get("reflection_submitted", False):
 
                 st.divider()
@@ -590,7 +777,10 @@ if st.session_state.recommendations:
 
                 roadmap = CAREER_ROADMAPS.get(top_career["name"])
 
-                # Student loved the career and wants to explore further
+                # -----------------------------
+                # EXPLORE FURTHER
+                # -----------------------------
+
                 if (
                     ("really enjoyed" in reflection or "interesting" in reflection)
                     and "Explore" in next_step
@@ -607,21 +797,25 @@ if st.session_state.recommendations:
 
                     if roadmap:
 
-                        st.write("### 📚 1. Build your foundation")
+                        st.write("### 📚 Build your foundation")
 
                         for resource in roadmap["learn"]:
+
                             st.markdown(
                                 f"**[{resource['title']}]({resource['url']})**"
                             )
-                            st.write(resource["description"])
 
-                        st.write("### 🛠️ 2. Build something")
+                            st.caption(
+                                resource["description"]
+                            )
+
+                        st.write("### 🛠️ Build something")
 
                         st.info(roadmap["project"])
 
-                        st.write("### 💼 3. Move toward opportunities")
+                        st.write("### 💼 Move toward opportunities")
 
-                        st.write(roadmap["internship"])
+                        st.info(roadmap["internship"])
 
                     else:
 
@@ -630,11 +824,15 @@ if st.session_state.recommendations:
                             "projects and opportunities for this career."
                         )
 
-                # Student wants to learn before going further
+                # -----------------------------
+                # LEARN BASICS
+                # -----------------------------
+
                 elif "Learn the basics" in next_step:
 
                     st.info(
-                        f"📚 **Let's build your foundation in {top_career['name']}.**"
+                        f"📚 **Let's build your foundation in "
+                        f"{top_career['name']}.**"
                     )
 
                     st.write(
@@ -644,13 +842,17 @@ if st.session_state.recommendations:
 
                     if roadmap:
 
-                        st.write("### Start here")
+                        st.write("### 📚 Start here")
 
                         for resource in roadmap["learn"]:
+
                             st.markdown(
                                 f"**[{resource['title']}]({resource['url']})**"
                             )
-                            st.write(resource["description"])
+
+                            st.caption(
+                                resource["description"]
+                            )
 
                         st.write("### 🛠️ When you're ready")
 
@@ -663,7 +865,10 @@ if st.session_state.recommendations:
                             "then move toward a small practical project."
                         )
 
-                # Student wants another career
+                # -----------------------------
+                # ANOTHER CAREER
+                # -----------------------------
+
                 elif "another career" in next_step:
 
                     st.info(
@@ -676,12 +881,18 @@ if st.session_state.recommendations:
                     )
 
                     st.write(
-                        "Your next step is to return to your career recommendations "
-                        "and try another path."
+                        "Your next step is to return to your career "
+                        "recommendations and try another path."
                     )
 
-                # Student is still unsure
-                elif "still figuring" in next_step or "still unsure" in reflection:
+                # -----------------------------
+                # STILL UNSURE
+                # -----------------------------
+
+                elif (
+                    "still figuring" in next_step
+                    or "still unsure" in reflection
+                ):
 
                     st.info(
                         "🤔 **You're still figuring it out — and that's okay.**"
@@ -698,7 +909,10 @@ if st.session_state.recommendations:
                     st.write("🧪 Try another short experiment")
                     st.write("🧭 Compare what you enjoyed in each experience")
 
-                # Student didn't enjoy the career
+                # -----------------------------
+                # DIDN'T ENJOY
+                # -----------------------------
+
                 elif "didn't enjoy" in reflection:
 
                     st.info(
@@ -716,6 +930,35 @@ if st.session_state.recommendations:
                     st.write("🔎 Explore another career")
                     st.write("🧪 Try another experiment")
                     st.write("🎯 Compare your experiences before deciding")
+
+                # -----------------------------
+                # EXPLORE ANOTHER CAREER
+                # -----------------------------
+
+                st.divider()
+
+                st.markdown(
+                    "### 🔄 Ready to explore another path?"
+                )
+
+                st.caption(
+                    "Every career teaches you something. "
+                    "You can try another direction whenever you're ready."
+                )
+
+                if st.button(
+                    "🔄 Explore another career →",
+                    use_container_width=True
+                ):
+
+                    st.session_state.experiment_started = False
+                    st.session_state.experiment_completed = False
+                    st.session_state.reflection_submitted = False
+                    st.session_state.current_day = 1
+                    st.session_state.day_1_complete = False
+                    st.session_state.show_results = False
+
+                    st.rerun()
 
 
     # -----------------------------
